@@ -29,7 +29,7 @@ namespace TCP_Client
 
         }
 
-        public byte[] ReadAllBytesAsync(BinaryReader reader)
+        public byte[] ReadAllBytes(BinaryReader reader)
         {
             const int bufferSize = 1024;
             using (var ms = new MemoryStream())
@@ -71,7 +71,7 @@ namespace TCP_Client
 
                     while (true)
                     {
-                        var imageData = await Task.Run(() => ReadAllBytesAsync(br));
+                        var imageData = await Task.Run(() => ReadAllBytes(br));
 
                         imgFromServer.Source = LoadImage(imageData);
 
