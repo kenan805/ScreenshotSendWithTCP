@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,12 +23,9 @@ namespace TCP_Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-            DataContext = this;
+        public MainWindow() => InitializeComponent();
 
-        }
+        TcpClient client;
 
         public byte[] ReadAllBytes(BinaryReader reader)
         {
@@ -62,20 +60,13 @@ namespace TCP_Client
         {
             try
             {
-                var client = new TcpClient();
-                client.Connect("127.0.0.1", 45678);
                 using (var stream = client.GetStream())
                 {
-                    var bw = new BinaryWriter(stream);
                     var br = new BinaryReader(stream);
 
-                    while (true)
-                    {
-                        var imageData = await Task.Run(() => ReadAllBytes(br));
+                    var imageData = await Task.Run(() => ReadAllBytes(br));
+                    imgFromServer.Source = LoadImage(imageData);
 
-                        imgFromServer.Source = LoadImage(imageData);
-
-                    }
                 }
             }
             catch (Exception ex)
@@ -84,5 +75,10 @@ namespace TCP_Client
             }
         }
 
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            client = new TcpClient();
+            client.Connect("127.0.0.1", 45678);
+        }
     }
 }

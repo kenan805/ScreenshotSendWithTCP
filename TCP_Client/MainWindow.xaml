@@ -7,9 +7,19 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Click="Button_Click" 
-            Height="30" Width="100" Content="Receive" />
-        <Image x:Name="imgFromServer" Stretch="Fill"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="6*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border Margin="4" BorderThickness="2" BorderBrush="Red" Padding="1">
+            <Image x:Name="imgFromServer" Stretch="Fill"/>
+        </Border>
+        <Grid Grid.Row="1">
+            <Button Click="Button_Click" HorizontalAlignment="Right" FontSize="18"
+            Height="30" Width="100" Content="Receive" Margin="0,0,20,0" VerticalAlignment="Center"/>
+            <Button HorizontalAlignment="Right" FontSize="18" Click="Button_Click_1"
+                Height="30" Width="100" Content="Connect" Margin="0,0,150,0" VerticalAlignment="Center"/>
+        </Grid>
 
 
     </Grid>

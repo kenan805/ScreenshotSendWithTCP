@@ -14,21 +14,35 @@ async Task MainAsync(string[] args)
         var ipAddress = IPAddress.Parse("127.0.0.1");
         var listener = new TcpListener(ipAddress, 45678);
 
+        Console.WriteLine("Listener...");
         listener.Start(100);
+        TcpClient client = null;
+        List<TcpClient> clients = new List<TcpClient>();
+        Task.Run(() =>
+        {
+            while (true)
+            {
+                var client = listener.AcceptTcpClient();
+                clients.Add(client);
+                Console.WriteLine("New client connected...(Write \"send\")");
+            }
+        });
 
         while (true)
         {
-            Console.WriteLine("Listener...");
-            var client = listener.AcceptTcpClient();
-            Console.WriteLine("New client connected...(Write \"send\")");
-
-            using (var stream = client.GetStream())
+            if (Console.ReadLine()?.ToLower() == "send")
             {
-                var bw = new BinaryWriter(stream);
-                var br = new BinaryReader(stream);
-
-                if (Console.ReadLine()?.ToLower() == "send")
-                    bw.Write(await Task.Run(() => ScreenConsole()));
+                for (int i = 0; i < clients.Count; i++)
+                {
+                    if (clients[i].Connected)
+                    {
+                        using (var stream = clients[i].GetStream())
+                        {
+                            BinaryWriter binaryWriter = new BinaryWriter(stream);
+                            binaryWriter.Write(await Task.Run(() => ScreenConsole()));
+                        }
+                    }
+                }
             }
         }
     }
